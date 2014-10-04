@@ -45,12 +45,12 @@ This will generate the following line that will be passed to fetchmail:
 
 # Add Schema
 
-Method 1:
+#### Method 1:
 
 add this line to `/etc/ldap/slapd.conf`:
 `include /etc/ldap/schema/fetchmail.schema`
 
-Method 2:
+#### Method 2:
 
 `ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/fetchmail.ldif`
 
