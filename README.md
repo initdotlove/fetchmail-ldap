@@ -72,3 +72,7 @@ Run `fetchmail.sh` and take a look at the output - it should be similiar to the 
 If everything fine setup a Cronjob to invoke the script:
 
 `*/5 * * * * /usr/local/bin/fetchmail.sh | fetchmail -f -`
+
+# Developers Homepage
+
+Vist: http://www.leckerbeef.de/posts/fetchmail-ldap
