@@ -75,4 +75,4 @@ If everything fine setup a Cronjob to invoke the script:
 
 # Developers Homepage
 
-Vist: http://www.leckerbeef.de/posts/fetchmail-ldap
+Vist: http://leckerbeef.de/fetchmail-ldap-integration/
