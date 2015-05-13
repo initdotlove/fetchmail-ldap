@@ -2,7 +2,7 @@
 
 OpenLDAP schema to dynamically generate a configuration file to poll mails via `fetchmail` .
 
-# Attributes
+# Attributes *unedit*
 
  * `fetchmailEnabled` >> `TRUE` or `FALSE` - used to deteced if the entry should be parsed or not
  * `fetchmailServer` >> DNS-Name of the Mailserver (but also works with IP-Addresses)
@@ -12,36 +12,54 @@ OpenLDAP schema to dynamically generate a configuration file to poll mails via `
  * `fetchmailCustom` >> add any additionial commands like `nokeep fetchall`
  * `fetchmailSSL` >> `TRUE` or `FALSE` - set this to enable SSL support
 
-# Expected DIT
+# Expected DIT *edit*
 
-Basically you should have two Trees:
-
- * one with the global settings used for each individual user, like `fetchmailServer`, `fetchmailProtocol` and `fetchmailCustom`
- * another tree with the actual users (should be `inetOrgPerson`). These must have at least added `fetchmail` to `ObjectClass` and a valid `mail` attribute. Usually you also add the attributes `fetchmailUsername` and `fetchmailPassword`
- 
-So the tree looks like:
+My tree looks like this:
 
 ```
 dc=foo,dc=bar
-|_ ou=Templates 
-|  |_ cn=fetchmailDefaults
-|     |_ fetchmailServer = pop.myserver.com
-|     |_ fetchmailProtocol = pop3
-|     |_ fetchmailCustom = nokeep fetchall
-|     |_ fetchmailSSL = true
-|     |_ sn = Fetchmail Default Values
-|     |_ objectClass = top, inetOrgPerson, fetchmail
 |_ ou=Users
-   |_ uid=testuser
-      |_ mail = testuser@myserver.com
-      |_ fetchmailUsername = testuser
-      |_ fetchmailPassword = topSecret
-      |_ fetchmailSSL = false <-- This would overwrite the Default-Settings
+   |_ uid=testuserA
+		|_ mail = testuserA@myserver.com
+		|_ sn=accountA
+		|	|_ fetchmailServer = pop.providerA.de
+		|	|_ fetchmailProtocol = pop3
+		|	|_ fetchmailCustom = nokeep fetchall
+		|	|_ fetchmailSSL = true
+		|	|_ fetchmailUsername = testuserA@providerA.de
+		|	|_ fetchmailPassword = secretA
+		|	|_ fetchmailEnabled = true
+		|	|_ sn = accountA
+		|	|_ objectClass = top, inetOrgPerson, fetchmail
+		|_ sn=accountB
+		|	|_ fetchmailServer = imap.providerB.de
+		|	|_ fetchmailProtocol = imap
+		|	|_ fetchmailCustom = fetchall
+		|	|_ fetchmailSSL = false
+		|	|_ fetchmailUsername = testuserA@providerB.de
+		|	|_ fetchmailPassword = secretB
+		|	|_ fetchmailEnabled = true
+		|	|_ sn = accountB
+		|	|_ objectClass = top, inetOrgPerson, fetchmail
+	|_ uid=testuserB
+		|_ mail = testuserB@myserver.com
+		|_ sn=fooAccount
+		|	|_ fetchmailServer = pop.providerA.de
+		|	|_ fetchmailProtocol = pop3
+		|	|_ fetchmailCustom = nokeep fetchall
+		|	|_ fetchmailSSL = true
+		|	|_ fetchmailUsername = testuserB@providerA.de
+		|	|_ fetchmailPassword = secretC
+		|	|_ fetchmailEnabled = true
+		|	|_ sn = accountA
+		|	|_ objectClass = top, inetOrgPerson, fetchmail
 ```
 
 This will generate the following line that will be passed to fetchmail:
 
-`poll pop.myserver.com proto pop3 user testuser pass toSecret is testuser@myserver.com here nokeep fetchall ssl`
+`poll pop.providerA.de proto pop3 user testuserA@providerA.de pass secretA is testuserA@myserver.com here nokeep fetchall ssl`
+`poll imap.providerB.de proto imap user testuserA@providerB.de pass secretB is testuserA@myserver.com here fetchall`
+`poll pop.providerA.de proto pop3 user testuserB@providerA.de pass secretC is testuserB@myserver.com here nokeep fetchall ssl`
 
 # Add Schema
 
@@ -60,8 +78,6 @@ add this line to `/etc/ldap/slapd.conf`:
 Change
 
  * `BASE_DN`
- * `BASE_DEFAULTS`
- * `BASE_USERS`
 
 that it fits your LDAP configuration.
 
