@@ -2,17 +2,17 @@
 
 OpenLDAP schema to dynamically generate a configuration file to poll mails via `fetchmail` .
 
-# Attributes *unedit*
+# Attributes
 
- * `fetchmailEnabled` >> `TRUE` or `FALSE` - used to deteced if the entry should be parsed or not
- * `fetchmailServer` >> DNS-Name of the Mailserver (but also works with IP-Addresses)
+ * `fetchmailEnabled ` >> `TRUE` or `FALSE` - used to deteced if the entry should be parsed or not
+ * `fetchmailServer  ` >> DNS-Name of the Mailserver (but also works with IP-Addresses)
  * `fetchmailProtocol` >> e.g. `pop3`, `imap` or any other protocol supported by fetchmail
  * `fetchmailUsername` >> Username of the mailbox you're connecting to
- * `fetchmailPassword ` >> same as above
- * `fetchmailCustom` >> add any additionial commands like `nokeep fetchall`
- * `fetchmailSSL` >> `TRUE` or `FALSE` - set this to enable SSL support
+ * `fetchmailPassword` >> same as above
+ * `fetchmailCustom  ` >> add any additionial commands like `nokeep fetchall`
+ * `fetchmailSSL     ` >> `TRUE` or `FALSE` - set this to enable SSL support
 
-# Expected DIT *edit*
+# Expected DIT
 
 My tree looks like this:
 
