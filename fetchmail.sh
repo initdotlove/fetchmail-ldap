@@ -29,7 +29,7 @@
     default_Server=$(<<< "${DEFAULTS_BUFFER}" grep "^fetchmailServer" | cut -d' ' -f2)
     default_Protocol=$(<<< "${DEFAULTS_BUFFER}" grep "^fetchmailProtocol" | cut -d' ' -f2)
     default_SSL=$(<<< "${DEFAULTS_BUFFER}" grep "^fetchmailSSL" | cut -d' ' -f2)
-    default_Custom=$(<<< "${DEFAULTS_BUFFER}" grep "^fetchmailCustom" | cut -d' ' -f2)
+    default_Custom=$(<<< "${DEFAULTS_BUFFER}" grep "^fetchmailCustom" | cut -d' ' -f2-)
 
 
 # Save user search results
@@ -66,7 +66,7 @@
         user_Server=$(<<< "${VALUE_BUFFER}" grep "^fetchmailServer" | cut -d' ' -f2)
         user_Protocol=$(<<< "${VALUE_BUFFER}" grep "^fetchmailProtocol" | cut -d' ' -f2)
         user_SSL=$(<<< "${VALUE_BUFFER}" grep "^fetchmailSSL" | cut -d' ' -f2)
-        user_Custom=$(<<< "${VALUE_BUFFER}" grep "^fetchmailCustom" | cut -d' ' -f2)
+        user_Custom=$(<<< "${VALUE_BUFFER}" grep "^fetchmailCustom" | cut -d' ' -f2-)
         user_Mail=$(<<< "${VALUE_BUFFER}" grep "^mail" | cut -d' ' -f2)
 
         # Compare default- and user-attributes
@@ -78,7 +78,7 @@
         [[ "x${user_SSL}" == "x" ]] && user_SSL=$default_SSL
         [[ "x${user_Custom}" == "x" ]] && user_Custom=$default_Custom
 
-        [[ "${user_SSL}" == "TRUE" ]] && user_SSL="ssl"
+        [[ "${user_SSL}" == "TRUE" ]] && user_SSL="ssl" || user_SSL=""
 
         # Generate the configuration lines that
         # will be piped to fetchmail
