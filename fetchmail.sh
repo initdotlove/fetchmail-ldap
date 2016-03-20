@@ -44,7 +44,7 @@ fi
 # into a new buffer variable
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    USER_BUFFER=$(${LDAPCMD} -b ${BASE_USERS} uid=* dn | sed 's/dn: //g')
+    USER_BUFFER=$(${LDAPCMD} -b ${BASE_USERS} "(fetchmailEnabled=TRUE)" dn | sed 's/dn: //g')
 
 # Get settings of a user
 # ~~~~~~~~~~~~~~~~~~~~~~
@@ -62,8 +62,6 @@ fi
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         user_Enabled=$(<<< "${VALUE_BUFFER}" grep "^fetchmailEnabled" | cut -d' ' -f2)
-        [[ ${user_Enabled} == "FALSE" || -z ${user_Enabled}  ]] && continue
-
 
         # Store additional attributes
         # in seperate variables
