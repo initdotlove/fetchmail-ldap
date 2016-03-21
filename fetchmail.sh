@@ -6,6 +6,14 @@
     BASE_DN="dc=REPLACE,dc=ME"
     BASE_DEFAULTS="cn=fetchmailDefaults,ou=Templates,${BASE_DN}"
     BASE_USERS="ou=Zarafa,${BASE_DN}"
+	BASE_BIND_USER=""
+	BASE_BIND_PWD=""
+
+if [ -z "$BASE_BIND_USER" ]; then
+	LDAPCMD="ldapsearch -o ldif-wrap=no -xLLL"
+else
+	LDAPCMD="ldapsearch -o ldif-wrap=no -D $BASE_BIND_USER -w $BASE_BIND_PWD -xLLL"
+fi
 
 # Filter of 'fetchmail' attributes
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -21,7 +29,7 @@
 # Save result of 'ldapsearch' into buffer variable
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    DEFAULTS_BUFFER=$(ldapsearch -xLLL -b ${BASE_DEFAULTS} ${FETCHMAIL_FILTER})
+    DEFAULTS_BUFFER=$(${LDAPCMD} -b ${BASE_DEFAULTS} ${FETCHMAIL_FILTER})
 
 # Get and Set Defaults
 # ~~~~~~~~~~~~~~~~~~~
@@ -36,7 +44,7 @@
 # into a new buffer variable
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    USER_BUFFER=$(ldapsearch -xLLL -b ${BASE_USERS} uid=* dn | sed 's/dn: //g')
+    USER_BUFFER=$(${LDAPCMD} -b ${BASE_USERS} "(fetchmailEnabled=TRUE)" dn | sed 's/dn: //g')
 
 # Get settings of a user
 # ~~~~~~~~~~~~~~~~~~~~~~
@@ -47,15 +55,13 @@
         # into a new buffer variable
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        VALUE_BUFFER=$(ldapsearch -xLLL -b ${user} mail ${FETCHMAIL_FILTER} | grep -v 'dn')
+        VALUE_BUFFER=$(${LDAPCMD} -b ${user} mail ${FETCHMAIL_FILTER} | grep -v 'dn')
 
         # If fetchmail not enabled we can
         # return the loop here
         # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         user_Enabled=$(<<< "${VALUE_BUFFER}" grep "^fetchmailEnabled" | cut -d' ' -f2)
-        [[ ${user_Enabled} == "FALSE" ]] && continue
-
 
         # Store additional attributes
         # in seperate variables
