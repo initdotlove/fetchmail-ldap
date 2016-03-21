@@ -1,3 +1,6 @@
+# LECKERBEEF.de PEN 1.3.6.1.4.1.44565
+# Author: Tobias Mandjik <webmaster@leckerbeef.de>
+
 attributetype ( 1.3.6.1.4.1.44565.1.2 NAME ( 'fetchmailEnabled' )
         EQUALITY booleanMatch
         SYNTAX 1.3.6.1.4.1.1466.115.121.1.7 )
@@ -26,4 +29,5 @@ attributetype ( 1.3.6.1.4.1.44565.1.8 NAME ( 'fetchmailSSL' )
 
 objectClass ( 1.3.6.1.4.1.44565.2.1 NAME ( 'fetchmail' )
         SUP top AUXILIARY
-        MAY ( cn $ fetchmailEnabled $ fetchmailUsername $ fetchmailPassword $ fetchmailServer $ fetchmailProtocol $ fetchmailCustom $ fetchmailSSL ))
+        MUST ( fetchmailEnabled )
+        MAY ( cn $ fetchmailUsername $ fetchmailPassword $ fetchmailServer $ fetchmailProtocol $ fetchmailCustom $ fetchmailSSL ))
